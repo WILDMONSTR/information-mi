@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    마비노기 모바일 거래소 시세
+  </title>
+
+
+  <!--
+    현재 위치:
+    public/page/market.html
+
+    css 폴더:
+    public/css/
+
+    따라서 ../css/
+  -->
+
+  <link
+    rel="stylesheet"
+    href="../css/style.css"
+  >
+
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <header>
+
+      <h1>
+        마비노기 모바일 거래소 시세
+      </h1>
+
+
+      <div class="description">
+        모비라이프 OpenAPI를 이용한 거래소 시세 조회
+      </div>
+
+    </header>
+
+
+    <section class="control-box">
+
+      <div class="search-row">
+
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="아이템 검색"
+          autocomplete="off"
+        >
+
+
+        <select
+          id="categorySelect"
+        >
+
+          <option value="">
+            전체 카테고리
+          </option>
+
+        </select>
+
+
+        <button
+          type="button"
+          id="refreshButton"
+        >
+          새로고침
+        </button>
+
+      </div>
+
+
+      <div class="sort-buttons">
+
+        <button
+          type="button"
+          class="sort-button"
+          data-sort-key="min_price"
+        >
+          최저가
+        </button>
+
+
+        <button
+          type="button"
+          class="sort-button"
+          data-sort-key="total_count"
+        >
+          등록 수량
+        </button>
+
+
+        <button
+          type="button"
+          class="sort-button"
+          data-sort-key="pct_change_1h"
+        >
+          1시간
+        </button>
+
+
+        <button
+          type="button"
+          class="sort-button"
+          data-sort-key="pct_change_24h"
+        >
+          24시간
+        </button>
+
+
+        <button
+          type="button"
+          class="sort-button"
+          data-sort-key="pct_change_7d"
+        >
+          7일
+        </button>
+
+      </div>
+
+
+      <div
+        class="status"
+        id="status"
+      >
+        데이터를 불러오는 중...
+      </div>
+
+    </section>
+
+
+    <section class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              아이템
+            </th>
+
+            <th>
+              최저가
+            </th>
+
+            <th>
+              등록 수량
+            </th>
+
+            <th>
+              1시간
+            </th>
+
+            <th>
+              24시간
+            </th>
+
+            <th>
+              7일
+            </th>
+
+            <th>
+              상태
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody
+          id="marketTable"
+        ></tbody>
+
+      </table>
+
+
+      <div
+        id="emptyMessage"
+        class="empty"
+      >
+        표시할 거래소 데이터가 없습니다.
+      </div>
+
+    </section>
+
+
+    <footer>
+      출처 : 모비라이프 제공
+    </footer>
+
+  </div>
+
+
+  <!-- Firebase Web SDK 초기화 -->
+  <script
+    type="module"
+    src="../js/firebase-config.js"
+  ></script>
+
+
+  <!-- 거래소 기능 -->
+  <script
+    src="../js/market.js"
+  ></script>
+
+</body>
+
+</html>

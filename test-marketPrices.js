@@ -36,8 +36,13 @@ async function test(id, fn) {
   });
   await test("T05-C02", () => assert.equal(typeof marketPrices, "function"));
   await test("T05-C03", async () => {
-    calls = 0; const r = await call({ search: "normal-c03", limit: "10" });
+    calls = 0; let url; upstream = async u => { url = String(u); return {
+      status: 200, ok: true, headers: { get: () => "application/json" },
+      text: async () => '{"data":[{"name":"test"}]}' }; };
+    const r = await call({ search: "normal-c03", limit: "10" });
     assert.equal(r.code, 200); assert.equal(r.body, '{"data":[{"name":"test"}]}'); assert.equal(calls, 1);
+    const params = new URL(url).searchParams;
+    assert.equal(params.get("sort"), "pct_change_24h_desc"); assert.equal(params.get("min_count"), "1");
   });
   await test("T05-C04", async () => {
     const n = calls, r = await call({}, "POST");

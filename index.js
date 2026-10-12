@@ -21,6 +21,10 @@ const MABIMOBI_API_KEY =
 const MABIMOBI_API_URL =
   "https://open.mabimobi.life/v1/market/prices";
 
+const SEARCH_MAX_LENGTH = 50;
+const CACHE_TTL_MS = 60 * 1000;
+const responseCache = new Map();
+
 
 /*
  * 거래소 API 프록시 함수
@@ -80,6 +84,13 @@ exports.marketPrices = onRequest(
           req.query.search || ""
         );
 
+
+      if (search.length > SEARCH_MAX_LENGTH) {
+        res.status(400).json({
+          error: "검색어는 50자 이하여야 합니다."
+        });
+        return;
+      }
 
       /*
        * 페이지네이션
@@ -146,6 +157,19 @@ exports.marketPrices = onRequest(
 
       const apiUrl =
         `${MABIMOBI_API_URL}?${params.toString()}`;
+
+      const cacheKey = JSON.stringify([
+        parentCategory, search, limit, offset
+      ]);
+      const cached = responseCache.get(cacheKey);
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+        res.status(cached.status);
+        res.set("Content-Type", cached.contentType);
+        res.set("Cache-Control", "no-store");
+        res.send(cached.body);
+        return;
+      }
+      if (cached) responseCache.delete(cacheKey);
 
 
       /*
@@ -218,12 +242,8 @@ exports.marketPrices = onRequest(
       ) {
 
         res.status(502).json({
-          error:
-            "모비라이프 API 인증에 실패했습니다.",
-          upstream_status:
-            401,
-          upstream_response:
-            body
+          error: "모비라이프 API 인증에 실패했습니다.",
+          upstream_status: 401
         });
 
         return;
@@ -235,12 +255,8 @@ exports.marketPrices = onRequest(
       ) {
 
         res.status(502).json({
-          error:
-            "모비라이프 API가 요청을 거부했습니다.",
-          upstream_status:
-            403,
-          upstream_response:
-            body
+          error: "모비라이프 API가 요청을 거부했습니다.",
+          upstream_status: 403
         });
 
         return;
@@ -270,6 +286,15 @@ exports.marketPrices = onRequest(
         "no-store"
       );
 
+      if (response.ok) {
+        responseCache.set(cacheKey, {
+          timestamp: Date.now(),
+          status: response.status,
+          contentType: response.headers.get("content-type") ||
+            "application/json; charset=utf-8",
+          body
+        });
+      }
 
       res.send(body);
 
@@ -277,8 +302,7 @@ exports.marketPrices = onRequest(
     } catch (error) {
 
       console.error(
-        "모비라이프 API 호출 실패:",
-        error
+        "모비라이프 API 호출 실패."
       );
 
 

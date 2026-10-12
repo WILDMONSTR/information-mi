@@ -2,8 +2,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const Module = require("node:module");
-const { spawnSync } = require("node:child_process");
-const root = __dirname, src = path.join(root, "index.js");
+const { spawnSync } = require("node:child_process"); const root = __dirname, src = path.join(root, "index.js");
 const load = Module._load;
 Module._load = function (id, p, m) {
   if (id === "firebase-functions/v2/https") return { onRequest: (_, fn) => fn };

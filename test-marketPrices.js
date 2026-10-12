@@ -89,17 +89,11 @@ async function test(id, fn) {
     assert.equal(r.code, 500); assert.ok(JSON.parse(r.body).error);
   });
   await test("T05-C10", () => {
-    const forbidden = ["marketPrices.js", "firebase.json", "firestore.rules",
-      "firestore.indexes.json", "package.json", "package-lock.json"];
-    const changed = spawnSync("git", ["diff", "--name-only", "9236123...HEAD"],
-      { cwd: root, encoding: "utf8" });
-    if (changed.status === 0) {
-      const files = changed.stdout.trim().split("\n").filter(Boolean);
-      assert.ok(files.length <= 2); assert.ok(!files.some(f => forbidden.includes(f) || f.startsWith("public/")));
-      const stat = spawnSync("git", ["diff", "--numstat", "9236123...HEAD"],
-        { cwd: root, encoding: "utf8" }).stdout.trim();
-      assert.ok(stat.split("\n").filter(Boolean).reduce((n, l) =>
-        n + l.split("\t").slice(0, 2).reduce((a, x) => a + Number(x), 0), 0) <= 150);
-    }
-  });
+    const d = spawnSync("git", ["diff", "--numstat", "9236123...HEAD"], { cwd: root, encoding: "utf8" });
+    assert.equal(d.status, 0);
+    const rows = d.stdout.trim().split("\n").filter(Boolean);
+    assert.ok(rows.length <= 2);
+    assert.ok(rows.every(x => !/^\d+\t\d+\t(public\/|package(-lock)?\.json|firebase\.json|firestore\.(rules|indexes\.json)|marketPrices\.js)/.test(x)));
+    assert.ok(rows.reduce((n, x) => n + x.split("\t").slice(0, 2).reduce((a, v) => a + Number(v), 0), 0) <= 150);
+  });;
 })();

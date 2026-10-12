@@ -95,5 +95,5 @@ async function test(id, fn) {
     assert.ok(rows.length <= 2);
     assert.ok(rows.every(x => !/^\d+\t\d+\t(public\/|package(-lock)?\.json|firebase\.json|firestore\.(rules|indexes\.json)|marketPrices\.js)/.test(x)));
     assert.ok(rows.reduce((n, x) => n + x.split("\t").slice(0, 2).reduce((a, v) => a + Number(v), 0), 0) <= 150);
-  });;
+  });
 })();

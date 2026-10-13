@@ -1,0 +1,9 @@
+T05 AI B expected input manifest
+
+1) Repository: https://github.com/WILDMONSTR/information-mi
+   Fixed starting version: 923612383174f094754909254a57b54a03c4f4a6
+   AI A result branch must not be checked out or used as source during isolated work.
+2) Handoff document: information-mi_AI-A_종료_인수인계.docx
+   SHA-256: 298813b9522d3fafd31c3a58b1923857530b3f5a986872875f91f7ad7992de7d
+
+No AI A post-work source/test branch was intended as an input. The Claude session's actual attachment list and prompt transcript were not supplied with the patch, so the manifest records expected inputs, not independent proof of what the external AI session received.

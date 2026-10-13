@@ -1,0 +1,35 @@
+Command: node test-marketPrices.js
+Environment: Node.js v22.16.0
+Harness: reconstructed local baseline; mock fetch; no real API key; no production requests.
+IMPORTANT CAVEAT: public/js/market.js was a syntax-valid stand-in in this local harness because the exact repository file could not be materialized into the sandbox. Therefore T05-C01 is not a complete AI B verification against the exact repository tree. Do not treat this log alone as proof of strict T05-C17 pass.
+
+--- Raw command output begins ---
+T05-C01 PASS
+T05-C02 PASS
+MABIMOBI API status: 200
+T05-C03 PASS
+T05-C04 PASS
+MABIMOBI API status: 200
+MABIMOBI API status: 200
+MABIMOBI API status: 200
+MABIMOBI API status: 200
+T05-C05 PASS
+MABIMOBI API status: 200
+T05-C06 PASS
+MABIMOBI API status: 200
+T05-C07 PASS
+T05-C08 PASS
+MABIMOBI API status: 401
+MABIMOBI API status: 403
+모비라이프 API 호출 실패: Error
+T05-C09 PASS
+T05-C10 PASS
+--- Raw command output ends ---
+
+GitHub comparison against 923612383174f094754909254a57b54a03c4f4a6:
+- index.js: +24/-7 = 31 changes
+- test-marketPrices.js: +98/-0 = 98 changes
+- Total changed lines: 129 (<= 150)
+- Changed files: 2 (<= 2)
+- New dependencies: 0
+- AI B branch commit: bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388

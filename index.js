@@ -21,6 +21,9 @@ const MABIMOBI_API_KEY =
 const MABIMOBI_API_URL =
   "https://open.mabimobi.life/v1/market/prices";
 
+/* 60초 인스턴스 메모리 캐시(최대 200개) */
+const cache = new Map();
+
 
 /*
  * 거래소 API 프록시 함수
@@ -79,6 +82,11 @@ exports.marketPrices = onRequest(
         String(
           req.query.search || ""
         );
+
+      if (Array.from(search).length > 50) {
+        res.status(400).json({ error: "검색어는 50자 이하여야 합니다." });
+        return;
+      }
 
 
       /*
@@ -147,6 +155,14 @@ exports.marketPrices = onRequest(
       const apiUrl =
         `${MABIMOBI_API_URL}?${params.toString()}`;
 
+
+      /* 동일 쿼리는 60초간 캐시 응답 */
+      const hit = cache.get(apiUrl);
+
+      if (hit && hit.expires > Date.now()) {
+        res.status(hit.status).set("Content-Type", hit.type || "application/json; charset=utf-8").set("Cache-Control", "no-store").send(hit.body);
+        return;
+      }
 
       /*
        * Firebase Secret에서 키 읽기
@@ -221,9 +237,7 @@ exports.marketPrices = onRequest(
           error:
             "모비라이프 API 인증에 실패했습니다.",
           upstream_status:
-            401,
-          upstream_response:
-            body
+            401
         });
 
         return;
@@ -238,9 +252,7 @@ exports.marketPrices = onRequest(
           error:
             "모비라이프 API가 요청을 거부했습니다.",
           upstream_status:
-            403,
-          upstream_response:
-            body
+            403
         });
 
         return;
@@ -250,6 +262,11 @@ exports.marketPrices = onRequest(
       /*
        * 모비라이프 응답을 브라우저로 전달
        */
+
+      if (response.ok) {
+        if (cache.size >= 200) cache.delete(cache.keys().next().value);
+        cache.set(apiUrl, { status: response.status, type: response.headers.get("content-type"), body, expires: Date.now() + 60000 });
+      }
 
       res.status(
         response.status
@@ -278,7 +295,7 @@ exports.marketPrices = onRequest(
 
       console.error(
         "모비라이프 API 호출 실패:",
-        error
+        error && error.name
       );
 
 

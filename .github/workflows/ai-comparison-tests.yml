@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.16.0"
+          node-version: "22.22.0"
       - run: node test-ai-comparison.js
       - run: node test-vercel-market-api.js
       - run: node --check api/market/prices.js

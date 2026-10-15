@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "title": "T05 AI A/B 인수인계 재현성 비교",
-  "updatedAt": "2026-10-15",
+  "updatedAt": "2026-10-15T08:35:26Z",
   "repository": "https://github.com/WILDMONSTR/information-mi",
-  "fixedCommit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
+  "fixedCommit": "923612383174f094754909254a57b54a03c4f4a6",
   "requiredNode": "v22.22.0",
   "requiredEnvironment": {
-    "os": "Linux x86_64",
+    "os": "Ubuntu 24.04.5 x86_64",
     "node": "v22.22.0",
-    "npm": "10.9.2",
-    "git": "git version 2.47.3"
+    "npm": "10.9.4",
+    "git": "git version 2.55.0"
   },
   "tests": [
     {
@@ -65,30 +65,52 @@
   ],
   "candidates": {
     "A": {
-      "status": "blocked",
-      "os": "Linux x86_64",
+      "status": "completed",
+      "os": "Ubuntu 24.04.5 x86_64",
       "node": "v22.22.0",
-      "npm": "10.9.2",
-      "git": "git version 2.47.3",
-      "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
-      "notes": "git clone https://github.com/WILDMONSTR/information-mi.git 실패: Could not resolve host: github.com (종료 코드 128). 테스트 미실행. 두 번째 재시도도 같은 오류.",
-      "tests": {}
+      "npm": "10.9.4",
+      "git": "git version 2.55.0",
+      "commit": "cbe1410bcc1ac41a5c5573f9572b3fe3736034df",
+      "notes": "T05 검사 실제 실행 기록: https://github.com/WILDMONSTR/information-mi/actions/runs/38706730878. GitHub Actions에서 AI A 후보 커밋 cbe1410bcc1ac41a5c5573f9572b3fe3736034df를 체크아웃하고 node test-marketPrices.js 실행. T05-C01~C10 모두 PASS. 검사 스크립트의 fetch는 mock으로 대체되었으므로 실제 MABIMOBI API 호출은 하지 않음. 공통 시작 커밋은 923612383174f094754909254a57b54a03c4f4a6.",
+      "tests": {
+        "T05-C01": "pass",
+        "T05-C02": "pass",
+        "T05-C03": "pass",
+        "T05-C04": "pass",
+        "T05-C05": "pass",
+        "T05-C06": "pass",
+        "T05-C07": "pass",
+        "T05-C08": "pass",
+        "T05-C09": "pass",
+        "T05-C10": "pass"
+      }
     },
     "B": {
       "status": "pending",
-      "os": "Linux x86_64",
+      "os": "",
       "node": "v22.22.0",
-      "npm": "10.9.2",
-      "git": "git version 2.47.3",
+      "npm": "",
+      "git": "",
       "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
-      "notes": "이번 재검사 결과 대기 중. 과거 다른 Node.js 조건에서의 결과는 이번 회차에 재사용하지 않음.",
-      "tests": {}
+      "notes": "AI B 후보의 이번 회차 T05-C01~C10 실행 증거는 아직 제출되지 않음. 이전 결과를 이번 회차 결과로 재사용하지 않음.",
+      "tests": {
+        "T05-C01": "not_run",
+        "T05-C02": "not_run",
+        "T05-C03": "not_run",
+        "T05-C04": "not_run",
+        "T05-C05": "not_run",
+        "T05-C06": "not_run",
+        "T05-C07": "not_run",
+        "T05-C08": "not_run",
+        "T05-C09": "not_run",
+        "T05-C10": "not_run"
+      }
     }
   },
   "comparison": {
     "valid": false,
     "scoreA": null,
     "scoreB": null,
-    "reason": "AI A 검사 미실행, AI B 이번 회차 증거 미제출. 동일 조건에서 양쪽 검사가 완료되기 전까지 점수와 우위는 산정하지 않음."
+    "reason": "AI A는 고정된 T05-C01~C10 검사 10/10 PASS. AI B의 이번 회차 검사가 미실행이므로 양쪽 비교 점수와 우위는 아직 산정하지 않음."
   }
 }

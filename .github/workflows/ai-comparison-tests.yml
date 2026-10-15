@@ -20,6 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22.22.0"
+      - name: Verify fixed Node.js version
+        run: |
+          node --version
+          test "$(node --version)" = "v22.22.0"
       - run: node test-ai-comparison.js
       - run: node test-vercel-market-api.js
       - run: node --check api/market/prices.js

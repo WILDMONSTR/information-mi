@@ -40,10 +40,10 @@
   }
 
   function candidateValid(candidate) {
-    const values = Object.values(candidate.tests || {});
+    const values = TESTS.map(([id]) => candidate.tests && candidate.tests[id]);
     return candidate.status === "completed" &&
       candidate.node === REQUIRED_NODE &&
-      candidate.commit === state.fixedCommit &&
+      Boolean(candidate.commit && candidate.commit.trim()) &&
       Boolean(candidate.os && candidate.os.trim()) &&
       values.length === TESTS.length &&
       values.every((value) => value === "pass" || value === "fail");
@@ -52,8 +52,9 @@
   function comparisonValid() {
     const a = state.candidates.A;
     const b = state.candidates.B;
+    // fixedCommit is the shared starting point; A and B are allowed to produce different result commits.
     return candidateValid(a) && candidateValid(b) &&
-      a.node === b.node && a.commit === b.commit && a.os === b.os;
+      a.node === b.node && a.os === b.os;
   }
 
   function score(candidate) {
@@ -155,7 +156,7 @@
       valid,
       scoreA: valid ? score(a) : null,
       scoreB: valid ? score(b) : null,
-      reason: valid ? "동일 운영체제·Node.js 버전·커밋에서 양쪽 검사를 완료함." : "두 후보의 검사 증거와 환경이 완전히 일치하지 않아 점수를 산정하지 않음."
+      reason: valid ? "같은 시작 커밋과 검사 기준에서 양쪽 검사를 완료했고 검사 런타임이 일치함." : "양쪽의 검사 증거가 갖춰지지 않았거나 검사 런타임이 일치하지 않아 점수를 산정하지 않음."
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     renderOverview();
@@ -194,7 +195,7 @@
       event.preventDefault();
       const candidate = collectForm();
       if (candidate.status === "completed" && !candidateValid(candidate)) {
-        $("form-feedback").textContent = "완료로 저장하려면 Node.js v22.22.0, 고정 커밋, 운영체제와 C01~C10의 실제 PASS/FAIL 결과 10개가 필요합니다.";
+        $("form-feedback").textContent = "완료로 저장하려면 Node.js v22.22.0, 검사 대상 커밋, 운영체제와 C01~C10의 실제 PASS/FAIL 결과 10개가 필요합니다.";
         return;
       }
       state.candidates[activeCandidate] = candidate;

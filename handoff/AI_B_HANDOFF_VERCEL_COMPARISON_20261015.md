@@ -85,3 +85,45 @@ git status --short
 - CI 기준: `.github/workflows/ai-comparison-tests.yml`은 `22.22.0`을 지정하며, 실제 런타임이 `v22.22.0`인지 확인한 다음 테스트를 실행한다.
 - 공식 배포 기록에서 Node.js `v22.22.0` 및 Windows x64 설치 파일을 확인할 수 있다: https://nodejs.org/dist/v22.22.0/
 - 워크플로 파일을 바꾼 새 커밋의 Actions 결과는 별도 확인해야 한다. 설정을 고쳤다는 사실만으로 통과했다고 기록하지 않는다.
+
+## 9. AI B 후속 검증 기록 — 커밋 `52255c1` (2026-10-15)
+
+1~8절은 수정하지 않았다. 이 절은 6절 다음 행동 1번과 4절 기준선을 새 커밋에서 다시 확인한 기록이며, 코드·데이터는 수정하지 않았다.
+
+### 9.1 로컬 재실행 (새 폴더 clone, 참고 기록)
+- 커밋 `52255c1fc196ee0d61fc6cb843b04b9ba3662c51`, Linux 6.18.44, git 2.43.0, **Node.js `v22.22.0` (기준과 일치)**, `MABIMOBI_API_KEY` 미설정
+- `node --check public/js/ai-comparison.js`: 종료 코드 0
+- `node --check api/market/prices.js`: 종료 코드 0
+- `node test-ai-comparison.js`: 종료 코드 0, AI-C01~C10 10/10 PASS
+- `node test-vercel-market-api.js`: 종료 코드 0, VERCEL-API-01~08 PASS (401/403/네트워크 오류 줄은 mock 응답이며 실제 MABIMOBI 요청이 아님)
+- 실행 후 `git status --short`: 비어 있음
+- 원본 로그 `verify-52255c1-20261015T081242Z.log` (실행 작업 공간, 저장소에는 포함하지 않음) SHA-256: `774bd42a08830192fd85a8f773e53a68a20edf2ea9b3fc77ba8198e609fac76b`
+- 참고: 이전 커밋 `4d9c411`에서 같은 명령을 v22.22.0으로 실행한 로그(SHA-256 `b58a7613957b94d3b0ce14a5a46b116d532a58ac0ee37c641a0d3235795b7f4b`)도 모두 종료 코드 0이었다.
+
+### 9.2 GitHub Actions (공식 판정)
+- 최신 run `38689648417` (커밋 `52255c1`): 성공. `Verify fixed Node.js version`, 두 테스트, `node --check api/market/prices.js` 단계가 모두 성공. 버전 검사 단계는 `v22.22.0`과 다르면 실패하도록 작성돼 있어 성공은 정확한 일치를 뜻하지만, 로그 원문은 권한 오류(Forbidden)로 읽지 못해 출력값은 직접 보지 못했다.
+- run `38689615111` (커밋 `7782ce1`): 성공.
+- 버전 통일 첫 커밋 `31772fa`의 run `38687269860`은 실패였고, 이후 `dc891ec`·`fbd9e6b`·`36af201`·`7782ce1`·`52255c1`의 run은 모두 성공이다. 실패 사유는 로그를 읽지 못해 확인하지 못했다.
+
+### 9.3 발견: 필수 Node 버전 표기 불일치 (미수정)
+`REQUIRED_NODE`와 CI는 `v22.22.0`으로 바뀌었지만, 아래 위치(커밋 `52255c1` 기준)에 `v22.16.0`이 남아 있다.
+- `public/ai-comparison.html` 64행(조건 카드 C의 Node.js 표시), 97행(`run-node` 입력 기본값)
+- `public/js/ai-comparison.js` 197행(완료 저장 거부 안내 문구)
+- `public/data/ai-comparison-results.json` 7행(`requiredNode`), 10행(`requiredEnvironment.node`), 70·80행(`node` 필드)
+
+로컬 정적 서버와 헤드리스 Chromium으로 재현한 결과:
+- 페이지는 필수 Node.js를 `v22.16.0`으로 표시하고 `run-node` 기본값도 `v22.16.0`이다.
+- AI B 기록을 상태 "완료", 검사 10개 PASS로 채우고 Node 칸을 기본값(`v22.16.0`)으로 두고 저장하면 거부되며, 안내는 "Node.js v22.16.0 … 필요합니다"이다.
+- 안내대로 `v22.16.0`을 직접 입력해도 같은 이유로 거부된다. `v22.22.0`을 입력해야만 저장된다.
+- 따라서 페이지의 표시와 안내를 따르면 완료 기록을 저장할 수 없다. 사용자가 표시와 다른 `v22.22.0`을 직접 입력하지 않으면 두 후보의 비교가 계속 "판정 보류"로 남을 수 있다.
+- `test-ai-comparison.js`와 CI는 `REQUIRED_NODE` 상수만 검사하므로 이 불일치를 잡지 못하며 통과한다.
+
+권장(미적용): 위 3개 파일의 `v22.16.0`을 `v22.22.0`으로 통일하고, `AI-C10`에 "저장소의 공개 파일에 `v22.16.0`이 남아 있지 않다"는 검사를 추가한다. 8절의 "모두 맞췄다"는 서술은 현재 사실과 다르다.
+
+### 9.4 Vercel
+- GitHub에 이 브랜치의 Vercel 배포 기록(deployments)과 커밋 상태가 없고, 이 세션에는 Vercel 토큰·CLI·커넥터가 없다. Preview 배포와 `/ai-comparison.html`, `/page/market.html`, `/api/market/prices`의 Preview 확인은 여전히 미수행이다.
+- `MABIMOBI_API_KEY`는 사용자가 Vercel 환경 변수에 설정해야 한다. Production 전환·환경 변수 변경은 하지 않았다.
+
+### 9.5 하지 않은 것
+- 5절 4번, 6절 2번(AI A/B 후보 코드를 같은 runner에서 각각 실행)은 수행하지 않았다. 비교 점수와 기본 공개 JSON은 그대로 "미산정"이다.
+- 이전 확인에서 이미 통과한 페이지 동작(10개 행 표시, JSON 내보내기·가져오기, 임시 저장, 시세 페이지의 Firebase 요청 0건)은 다시 검사하지 않았다. 이번에 바뀐 파일 중 해당 동작을 건드리는 변경은 없었다.

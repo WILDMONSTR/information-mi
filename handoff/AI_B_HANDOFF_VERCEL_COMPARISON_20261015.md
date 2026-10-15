@@ -18,13 +18,15 @@
 - Vercel API: `api/market/prices.js`
 - Vercel 설정: `vercel.json`
 - 별도 테스트: `test-ai-comparison.js`, `test-vercel-market-api.js`
+- 공통 시작 커밋: `923612383174f094754909254a57b54a03c4f4a6`
+- AI A 검사 대상 커밋: `cbe1410bcc1ac41a5c5573f9572b3fe3736034df` (T05-C01~C10 10/10 PASS, 기록은 10절)
 - 원본 AI B 작업 커밋(비교 대상): `bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388`
 - 기존 `main`, AI A/AI B 원본 브랜치 및 Firebase/Firestore 데이터는 이 작업에서 변경하지 않는다.
 
 ## 3. 실행 방법과 Node.js 환경 원칙
 
 ### 공식 판정 — GitHub Actions
-AI 도구의 기본 실행 환경에 특정 Node.js 버전이 미리 설치돼 있는지는 GitHub Actions 기준 실행과 별개다. 후보 코드의 최종 통과/실패는 두 후보 모두 같은 고정 테스트를 기준 runner에서 실행해 판정한다. 이 저장소 워크플로는 Node.js `v22.22.0`을 준비하고 버전 일치를 검사한 뒤 테스트를 실행한다.
+AI 도구의 작업 환경은 억지로 통일하지 않고 실제 환경을 따로 기록한다. 여기서 Node.js `v22.22.0`은 AI 도구의 작성 환경을 뜻하지 않고, 제출 코드를 같은 조건으로 확인하기 위한 GitHub Actions 검사 runner의 버전이다. 두 후보는 각자의 검사 대상 커밋에서 동일한 T05-C01~C10 스크립트로 검사한다.
 
 Actions 결과: https://github.com/WILDMONSTR/information-mi/actions
 
@@ -57,19 +59,19 @@ git status --short
 - 구문 검사: `public/js/ai-comparison.js`, `api/market/prices.js`
 - 앞선 독립 실행 기록에서는 Node.js `v22.22.0`에서 두 테스트와 두 구문 검사가 모두 종료 코드 0으로 끝났다. 테스트 출력의 업스트림 401/403 및 네트워크 오류는 mock으로 만든 응답이며 실제 MABIMOBI 서버에 요청한 결과가 아니다.
 - 최신 버전 고정 변경 커밋의 CI 판정은 해당 run을 확인해야 한다: https://github.com/WILDMONSTR/information-mi/actions
-- 기본 공개 JSON은 AI A 복제 실패, AI B 대기, T05-C01~C10 미실행 상태다. 이 상태를 임의로 PASS로 바꾸지 않는다.
-- 두 후보를 같은 runner와 같은 검사로 평가하더라도 AI A/B의 실제 검사 로그가 각각 확보되기 전까지 비교 점수는 미산정이다.
+- 공개 결과 JSON은 AI A의 T05-C01~C10 실제 실행 결과 10/10 PASS로 갱신했다. AI B는 이번 회차 검사 증거가 아직 없어 미실행 상태로 둔다.
+- AI A의 실제 검사 로그가 확보되었다. AI B의 검사 증거가 추가되기 전까지 비교 점수와 우위는 미산정이다.
 
 ## 5. 남은 문제
 1. Vercel Preview 배포 및 Preview URL에서 `/ai-comparison.html`, `/page/market.html`, `/api/market/prices`를 실제 확인해야 한다. GitHub Actions 성공은 Vercel 배포 성공을 뜻하지 않는다.
 2. 이전 Vercel 프로젝트 생성 시 권한 오류 403이 발생했다. 연결된 계정/팀 권한을 확인하기 전에는 배포 성공을 주장하지 않는다.
 3. `MABIMOBI_API_KEY`는 Vercel Project Settings → Environment Variables에 사용자가 설정해야 한다. 소스, 공개 JSON, 커밋에 키를 넣지 않는다.
-4. 실제 AI A/B 결과를 동일 기준 runner에서 각각 실행해 기록하는 절차가 남아 있다. AI 도구 자체의 기본 Node.js 설치 버전이 같았다고 기록해서는 안 된다.
+4. AI A 검사는 완료되어 기록됐다. AI B 후보 커밋에서 같은 고정 테스트를 실행하고 로그·커밋·환경을 기록한다. AI 작업 환경이 동일했다고 추정하지 말고 실제 작업 환경과 검사 runner를 구분한다.
 
 ## 6. 다음 행동
-1. GitHub Actions 페이지에서 새 버전 검증 단계가 `v22.22.0`을 출력하고 성공했는지 확인한다.
-2. AI A 후보 코드와 AI B 후보 코드를 같은 버전의 기준 runner와 같은 테스트 세트로 각각 실행하고, 각 실행의 커밋·run URL·결과를 기록한다.
-3. 실제 실행 로그가 확인된 뒤에만 비교 결과 JSON과 본 문서를 갱신한다.
+1. [AI A T05 검사 run](https://github.com/WILDMONSTR/information-mi/actions/runs/38706730878)을 참고해 AI B 후보 커밋에서도 `node test-marketPrices.js`를 실행한다.
+2. AI B 실행의 검사 대상 커밋, 실제 검사 runner OS/Node/npm/Git 버전, run URL 및 C01~C10 결과를 기록한다. AI 도구 자체의 작업 환경은 별도로 기록하며 같았다고 추정하지 않는다.
+3. AI B의 증거가 확보된 뒤에만 비교 점수를 산정한다.
 4. 이후 Vercel 프로젝트/팀 연결 권한을 확인한 뒤 Preview만 배포하고 페이지/API를 점검한다. Production 전환은 하지 않는다.
 
 ## 7. 건드리지 말 것
@@ -139,3 +141,22 @@ git status --short
 
 ### 9.7 남은 불일치 후보 (미수정)
 - 기본 JSON의 `requiredEnvironment.npm`은 `10.9.2`이지만, 이 검증 환경의 Node `v22.22.0`이 포함한 npm은 `10.9.4`였다. `requiredEnvironment.git`(`git version 2.47.3`)도 이 환경(`2.43.0`)과 다르다. 두 값은 페이지의 필수 조건 판정에 쓰이지 않는 것으로 보이나, 표시 목적이라면 확인이 필요하다.
+
+
+## 10. AI A 고정 검사 완료 — 2026-10-15
+
+### 실행 근거
+- GitHub Actions run: https://github.com/WILDMONSTR/information-mi/actions/runs/38706730878
+- 검사 전용 브랜치: `t05-ai-a-run-20261015` (검사 워크플로만 추가했으며, AI A 원본 브랜치는 변경하지 않음)
+- 실제 체크아웃한 AI A 후보 커밋: `cbe1410bcc1ac41a5c5573f9572b3fe3736034df`
+- 공통 시작 커밋: `923612383174f094754909254a57b54a03c4f4a6`
+- runner 환경: Ubuntu 24.04.5 x86_64; Node.js `v22.22.0`; npm `10.9.4`; Git `2.55.0`
+- 실행 명령: `node test-marketPrices.js`; 종료 코드 0
+- 결과: `T05-C01 PASS`, `T05-C02 PASS`, `T05-C03 PASS`, `T05-C04 PASS`, `T05-C05 PASS`, `T05-C06 PASS`, `T05-C07 PASS`, `T05-C08 PASS`, `T05-C09 PASS`, `T05-C10 PASS`.
+- C10 변경 범위: `index.js` 38 additions/14 deletions, `test-marketPrices.js` 98 additions/0 deletions. 2 files, 150 total changed lines; 검사 제한 통과.
+- T05 테스트는 합성 `fetch` 응답을 사용했다. 로그에 200/401/403과 네트워크 오류가 표시되지만 실제 MABIMOBI API에 요청하거나 API 키를 사용한 것은 아니다.
+- 결과 JSON 커밋: `41950c1de627b6cadfa1ba8dfd3323c6ce249a53` — A를 완료/10 PASS, B는 미실행, 비교 점수는 미산정으로 기록.
+- 비교 페이지는 공통 시작 커밋과 후보별 검사 대상 커밋을 분리한다. A/B 결과 커밋은 서로 달라도 되며, 실제 검사 증거와 런타임 기록이 완성되기 전에는 비교 점수를 공개하지 않는다.
+
+### 다음 작업
+AI B는 인수인계 문서만을 바탕으로 작업을 재개하고, 자신의 검사 대상 커밋에서 같은 T05-C01~C10 스크립트를 실행한다. AI A의 PASS 결과를 AI B 결과로 복사하지 않는다. AI 작업 환경을 강제로 통일하지 않으며, AI B의 실제 작업 환경과 검사 runner 환경을 구분해서 기록한다.

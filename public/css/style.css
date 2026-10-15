@@ -405,3 +405,26 @@ footer {
   }
 
 }
+
+/* AI handoff comparison navigation (additive) */
+.comparison-nav {
+  margin: 14px 0 0;
+}
+
+.comparison-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #496638;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid #d8e1d0;
+  background: #f0f5e9;
+  border-radius: 8px;
+  padding: 8px 11px;
+}
+
+.comparison-nav a:hover {
+  background: #e4edd9;
+}

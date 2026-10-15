@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "T05 AI A/B 인수인계 재현성 비교",
-  "updatedAt": "2026-10-15T08:35:26Z",
+  "updatedAt": "2026-10-15T22:48:00+09:00",
   "repository": "https://github.com/WILDMONSTR/information-mi",
   "fixedCommit": "923612383174f094754909254a57b54a03c4f4a6",
   "requiredNode": "v22.22.0",
@@ -112,5 +112,12 @@
     "scoreA": null,
     "scoreB": null,
     "reason": "AI A는 고정된 T05-C01~C10 검사 10/10 PASS. AI B의 이번 회차 검사가 미실행이므로 양쪽 비교 점수와 우위는 아직 산정하지 않음."
+  },
+  "deployment": {
+    "target": "preview",
+    "status": "blocked",
+    "url": null,
+    "reason": "Vercel connector returned 403 Forbidden / not authorized for the intended scope. No deployment was created.",
+    "lastAttemptAt": "2026-10-15T22:48:00+09:00"
   }
 }

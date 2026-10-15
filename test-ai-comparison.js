@@ -30,7 +30,7 @@ const checks = [
   ["AI-C10", () => {
     assert.match(js, /localStorage/);
     assert.match(js, /export-json/);
-    assert.match(js, /REQUIRED_NODE = "v22\.16\.0"/);
+    assert.match(js, /REQUIRED_NODE = "v22\.22\.0"/);
     assert.match(html, /공개 보고서/);
   }]
 ];

@@ -1,0 +1,58 @@
+name: T05 AI B fixed checks
+on:
+  push:
+    branches: [t05-ai-b-run-20261015]
+  workflow_dispatch:
+jobs:
+  test-ai-b:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact AI B candidate commit
+        uses: actions/checkout@v4
+        with:
+          ref: bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388
+          fetch-depth: 0
+      - name: Set Node.js 22.22.0 for fixed evaluation runner
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+      - name: Record environment
+        run: |
+          node --version
+          test "$(node --version)" = "v22.22.0"
+          npm --version
+          git --version
+          git rev-parse HEAD
+          git status --short
+      - name: Run fixed T05-C01 through T05-C10 tests
+        run: |
+          set -o pipefail
+          node test-marketPrices.js 2>&1 | tee /tmp/t05-output.txt
+      - name: Record scope diff for T05-C10
+        run: git diff --numstat 923612383174f094754909254a57b54a03c4f4a6...HEAD
+      - name: Publish evidence as annotations
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os, subprocess
+          def enc(s):
+              return s.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          def sh(cmd):
+              return subprocess.run(cmd, shell=True, capture_output=True, text=True).stdout.strip()
+          status = sh("git status --short") or "(clean)"
+          env = "\n".join([
+              "OS=" + sh(". /etc/os-release; echo $PRETTY_NAME") + " " + sh("uname -m"),
+              "KERNEL=" + sh("uname -r"),
+              "RUNNER_IMAGE=" + os.environ.get("ImageOS", "") + " " + os.environ.get("ImageVersion", ""),
+              "NODE=" + sh("node --version"),
+              "NPM=" + sh("npm --version"),
+              "GIT=" + sh("git --version"),
+              "HEAD=" + sh("git rev-parse HEAD"),
+              "GIT_STATUS=" + status,
+          ])
+          print("::notice title=AI B T05 environment::" + enc(env))
+          out = open('/tmp/t05-output.txt').read() if os.path.exists('/tmp/t05-output.txt') else '(no output file)'
+          print("::notice title=AI B T05 test output::" + enc(out))
+          diff = sh("git diff --numstat 923612383174f094754909254a57b54a03c4f4a6...HEAD")
+          print("::notice title=AI B T05 scope diff::" + enc(diff))
+          PY

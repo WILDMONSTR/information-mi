@@ -1,0 +1,24 @@
+name: AI comparison page checks
+on:
+  push:
+    branches: [vercel-ai-handoff-comparison]
+  pull_request:
+    branches: [main]
+    paths:
+      - "public/ai-comparison.html"
+      - "public/css/ai-comparison.css"
+      - "public/js/ai-comparison.js"
+      - "public/data/ai-comparison-results.json"
+      - "test-ai-comparison.js"
+      - "api/market/prices.js"
+      - "vercel.json"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.16.0"
+      - run: node test-ai-comparison.js
+      - run: node --check api/market/prices.js

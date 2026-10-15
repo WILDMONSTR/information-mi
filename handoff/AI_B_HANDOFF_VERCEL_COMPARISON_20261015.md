@@ -156,6 +156,7 @@ git status --short
 - C10 변경 범위: `index.js` 38 additions/14 deletions, `test-marketPrices.js` 98 additions/0 deletions. 2 files, 150 total changed lines; 검사 제한 통과.
 - T05 테스트는 합성 `fetch` 응답을 사용했다. 로그에 200/401/403과 네트워크 오류가 표시되지만 실제 MABIMOBI API에 요청하거나 API 키를 사용한 것은 아니다.
 - 결과 JSON 커밋: `41950c1de627b6cadfa1ba8dfd3323c6ce249a53` — A를 완료/10 PASS, B는 미실행, 비교 점수는 미산정으로 기록.
+- 기록/비교 로직 수정 이후 GitHub Actions run: https://github.com/WILDMONSTR/information-mi/actions/runs/38707285906 — 성공. AI-C01~C10 10/10 PASS, VERCEL-API-01~08 PASS, Node.js `v22.22.0` 확인, `node --check api/market/prices.js` 통과. Vercel Preview/실제 MABIMOBI 호출은 검증하지 않음.
 - 비교 페이지는 공통 시작 커밋과 후보별 검사 대상 커밋을 분리한다. A/B 결과 커밋은 서로 달라도 되며, 실제 검사 증거와 런타임 기록이 완성되기 전에는 비교 점수를 공개하지 않는다.
 
 ### 다음 작업

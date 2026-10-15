@@ -61,7 +61,7 @@
       <div class="condition-grid">
         <div class="condition-card"><span class="condition-index">A</span><div><span class="field-label">대상 저장소</span><a href="https://github.com/WILDMONSTR/information-mi" target="_blank" rel="noreferrer">WILDMONSTR/information-mi ↗</a></div></div>
         <div class="condition-card"><span class="condition-index">B</span><div><span class="field-label">코드 커밋</span><code id="fixed-commit">bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388</code></div></div>
-        <div class="condition-card"><span class="condition-index">C</span><div><span class="field-label">Node.js</span><strong>v22.16.0</strong></div></div>
+        <div class="condition-card"><span class="condition-index">C</span><div><span class="field-label">Node.js</span><strong>v22.22.0</strong></div></div>
         <div class="condition-card"><span class="condition-index">D</span><div><span class="field-label">검사 명령</span><code>node --check index.js</code><code>node --check public/js/market.js</code><code>node test-marketPrices.js</code></div></div>
       </div>
       <p class="subtle-note">T05-C01~C10은 MobiLife 시세 조회 프록시의 요청·오류 처리 개선을 확인하는 기존 검사입니다. 합성 업스트림 응답을 사용하므로 실제 MobiLife API 통신이나 Vercel/Firebase 배포 성공을 증명하지는 않습니다.</p>
@@ -94,7 +94,7 @@
         <div class="form-grid">
           <label>실행 상태<select id="run-status" name="status"><option value="blocked">환경 문제로 중단</option><option value="pending">아직 실행 안 함</option><option value="completed">검사 완료</option></select></label>
           <label>운영체제<input id="run-os" name="os" required value="Linux x86_64"></label>
-          <label>Node.js 버전<input id="run-node" name="node" required value="v22.16.0"></label>
+          <label>Node.js 버전<input id="run-node" name="node" required value="v22.22.0"></label>
           <label>Git 버전<input id="run-git" name="git" value="git version 2.47.3"></label>
           <label class="field-wide">검사 대상 커밋<input id="run-commit" name="commit" required value="bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388"></label>
           <label class="field-wide">로그 / 중단 사유<textarea id="run-notes" name="notes" rows="3" placeholder="실제 명령 출력, 종료 코드, 오류 메시지를 기록하세요."></textarea></label>

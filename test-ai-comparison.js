@@ -10,7 +10,8 @@ const jsPath = path.join(root, "public", "js", "ai-comparison.js");
 const dataPath = path.join(root, "public", "data", "ai-comparison-results.json");
 const html = fs.readFileSync(htmlPath, "utf8");
 const js = fs.readFileSync(jsPath, "utf8");
-const data = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+const dataRaw = fs.readFileSync(dataPath, "utf8");
+const data = JSON.parse(dataRaw);
 const checks = [
   ["AI-C01", () => assert.match(html, /AI 인수인계/)],
   ["AI-C02", () => assert.match(html, /id="current-results"/)],
@@ -32,6 +33,14 @@ const checks = [
     assert.match(js, /export-json/);
     assert.match(js, /REQUIRED_NODE = "v22\.22\.0"/);
     assert.match(html, /공개 보고서/);
+    // 필수 Node.js 버전 표기가 페이지, 스크립트, 기본 데이터에서 서로 일치하고 이전 버전이 남지 않았는지 확인
+    const requiredNode = js.match(/REQUIRED_NODE = "(v\d+\.\d+\.\d+)"/)[1];
+    for (const [name, content] of [["ai-comparison.html", html], ["ai-comparison.js", js], ["ai-comparison-results.json", dataRaw]]) {
+      assert.doesNotMatch(content, /22\.16\.0/, name + "에 이전 Node.js 버전 v22.16.0이 남아 있음");
+    }
+    assert.equal(data.requiredNode, requiredNode);
+    assert.equal(data.requiredEnvironment.node, requiredNode);
+    assert.match(html, new RegExp('id="run-node"[^>]*value="' + requiredNode.replace(/\./g, "\\.") + '"'));
   }]
 ];
 let failed = 0;

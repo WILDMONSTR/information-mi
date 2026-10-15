@@ -194,7 +194,7 @@
       event.preventDefault();
       const candidate = collectForm();
       if (candidate.status === "completed" && !candidateValid(candidate)) {
-        $("form-feedback").textContent = "완료로 저장하려면 Node.js v22.16.0, 고정 커밋, 운영체제와 C01~C10의 실제 PASS/FAIL 결과 10개가 필요합니다.";
+        $("form-feedback").textContent = "완료로 저장하려면 Node.js v22.22.0, 고정 커밋, 운영체제와 C01~C10의 실제 PASS/FAIL 결과 10개가 필요합니다.";
         return;
       }
       state.candidates[activeCandidate] = candidate;

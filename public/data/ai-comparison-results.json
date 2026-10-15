@@ -4,10 +4,10 @@
   "updatedAt": "2026-10-15",
   "repository": "https://github.com/WILDMONSTR/information-mi",
   "fixedCommit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
-  "requiredNode": "v22.16.0",
+  "requiredNode": "v22.22.0",
   "requiredEnvironment": {
     "os": "Linux x86_64",
-    "node": "v22.16.0",
+    "node": "v22.22.0",
     "npm": "10.9.2",
     "git": "git version 2.47.3"
   },
@@ -67,7 +67,7 @@
     "A": {
       "status": "blocked",
       "os": "Linux x86_64",
-      "node": "v22.16.0",
+      "node": "v22.22.0",
       "npm": "10.9.2",
       "git": "git version 2.47.3",
       "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
@@ -77,7 +77,7 @@
     "B": {
       "status": "pending",
       "os": "Linux x86_64",
-      "node": "v22.16.0",
+      "node": "v22.22.0",
       "npm": "10.9.2",
       "git": "git version 2.47.3",
       "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",

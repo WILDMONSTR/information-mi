@@ -22,11 +22,25 @@ const checks = [
   ["AI-C07", () => assert.equal(data.tests.length, 10)],
   ["AI-C08", () => assert.deepEqual(data.tests.map((t) => t.id), Array.from({length:10}, (_,i) => "T05-C" + String(i+1).padStart(2,"0")))],
   ["AI-C09", () => {
-    assert.equal(data.candidates.A.status, "blocked");
-    assert.ok(Object.values(data.candidates.A.tests).every((v) => v === "not_run"));
-    assert.equal(data.comparison.valid, false);
-    assert.equal(data.comparison.scoreA, null);
-    assert.equal(data.comparison.scoreB, null);
+    const candidateValid = (candidate) =>
+      candidate.status === "completed" &&
+      candidate.node === data.requiredNode &&
+      Boolean(candidate.commit && candidate.commit.trim()) &&
+      Boolean(candidate.os && candidate.os.trim()) &&
+      data.tests.every((test) => ["pass", "fail"].includes(candidate.tests && candidate.tests[test.id]));
+    const a = data.candidates.A;
+    const b = data.candidates.B;
+    const expectedValid = candidateValid(a) && candidateValid(b) &&
+      a.node === b.node && a.os === b.os;
+    assert.equal(data.comparison.valid, expectedValid);
+    if (expectedValid) {
+      const score = (candidate) => data.tests.reduce((sum, test) => sum + (candidate.tests[test.id] === "pass" ? 1 : 0), 0);
+      assert.equal(data.comparison.scoreA, score(a));
+      assert.equal(data.comparison.scoreB, score(b));
+    } else {
+      assert.equal(data.comparison.scoreA, null);
+      assert.equal(data.comparison.scoreB, null);
+    }
   }],
   ["AI-C10", () => {
     assert.match(js, /localStorage/);

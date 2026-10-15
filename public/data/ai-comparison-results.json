@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "title": "T05 AI A/B 인수인계 재현성 비교",
+  "updatedAt": "2026-10-15",
+  "repository": "https://github.com/WILDMONSTR/information-mi",
+  "fixedCommit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
+  "requiredNode": "v22.16.0",
+  "requiredEnvironment": {
+    "os": "Linux x86_64",
+    "node": "v22.16.0",
+    "npm": "10.9.2",
+    "git": "git version 2.47.3"
+  },
+  "tests": [
+    {
+      "id": "T05-C01",
+      "label": "구문 검사",
+      "detail": "index.js와 public/js/market.js의 Node 구문 검사"
+    },
+    {
+      "id": "T05-C02",
+      "label": "핸들러 확인",
+      "detail": "marketPrices 핸들러가 함수로 내보내지는지 확인"
+    },
+    {
+      "id": "T05-C03",
+      "label": "정상 요청",
+      "detail": "정상 GET 요청 및 기본 정렬 파라미터 확인"
+    },
+    {
+      "id": "T05-C04",
+      "label": "HTTP 메서드 제한",
+      "detail": "GET 외 요청은 405로 거부"
+    },
+    {
+      "id": "T05-C05",
+      "label": "페이지네이션 경계",
+      "detail": "limit/offset의 잘못된 값과 상한 처리"
+    },
+    {
+      "id": "T05-C06",
+      "label": "검색 길이 제한",
+      "detail": "50 코드 포인트 허용, 51 초과 거부"
+    },
+    {
+      "id": "T05-C07",
+      "label": "캐시",
+      "detail": "동일 요청을 짧은 시간 내 반복하면 업스트림 재호출 억제"
+    },
+    {
+      "id": "T05-C08",
+      "label": "비밀값 노출 방지",
+      "detail": "테스트 시크릿이 소스/공개 파일에 없는지 확인"
+    },
+    {
+      "id": "T05-C09",
+      "label": "업스트림 오류 처리",
+      "detail": "401/403 응답 본문 비노출, 네트워크 오류 처리"
+    },
+    {
+      "id": "T05-C10",
+      "label": "변경 범위 확인",
+      "detail": "기준 커밋 대비 변경 파일과 변경량 제한"
+    }
+  ],
+  "candidates": {
+    "A": {
+      "status": "blocked",
+      "os": "Linux x86_64",
+      "node": "v22.16.0",
+      "npm": "10.9.2",
+      "git": "git version 2.47.3",
+      "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
+      "notes": "git clone https://github.com/WILDMONSTR/information-mi.git 실패: Could not resolve host: github.com (종료 코드 128). 테스트 미실행. 두 번째 재시도도 같은 오류.",
+      "tests": {}
+    },
+    "B": {
+      "status": "pending",
+      "os": "Linux x86_64",
+      "node": "v22.16.0",
+      "npm": "10.9.2",
+      "git": "git version 2.47.3",
+      "commit": "bdb3e0954bc32dc4f8e6681ab6d82f4ce5cd7388",
+      "notes": "이번 재검사 결과 대기 중. 과거 다른 Node.js 조건에서의 결과는 이번 회차에 재사용하지 않음.",
+      "tests": {}
+    }
+  },
+  "comparison": {
+    "valid": false,
+    "scoreA": null,
+    "scoreB": null,
+    "reason": "AI A 검사 미실행, AI B 이번 회차 증거 미제출. 동일 조건에서 양쪽 검사가 완료되기 전까지 점수와 우위는 산정하지 않음."
+  }
+}

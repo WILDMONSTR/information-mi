@@ -8,6 +8,8 @@
 ## 2. 현재 상태
 - 저장소: https://github.com/WILDMONSTR/information-mi
 - 작업 브랜치: `vercel-ai-handoff-comparison`
+- 보고서 페이지: `public/ai-comparison.html` (AI A 결과 기록 완료, AI B 미실행, 비교 점수 미산정)
+- Vercel 배포 상태: **보류**. 연결된 Vercel 권한에서 403 Forbidden이 발생해 Preview 배포를 만들지 못했다.
 - 비교 테스트의 기준 Node.js: `v22.22.0`
 - 기준 실행 환경: GitHub Actions의 `ubuntu-latest` runner
 - CI는 `.github/workflows/ai-comparison-tests.yml`에서 `actions/setup-node`로 `22.22.0`을 지정하고, 별도 단계에서 실제 `node --version`이 `v22.22.0`인지 검사한다.
@@ -64,12 +66,14 @@ git status --short
 
 ## 5. 남은 문제
 1. Vercel Preview 배포 및 Preview URL에서 `/ai-comparison.html`, `/page/market.html`, `/api/market/prices`를 실제 확인해야 한다. GitHub Actions 성공은 Vercel 배포 성공을 뜻하지 않는다.
-2. 이전 Vercel 프로젝트 생성 시 권한 오류 403이 발생했다. 연결된 계정/팀 권한을 확인하기 전에는 배포 성공을 주장하지 않는다.
+2. 이번 배포 시도에서도 Vercel connector가 선택된 scope에 대해 `403 Forbidden / Not authorized`를 반환했다. 배포 URL은 생성되지 않았다. Vercel 연결을 해당 scope에 재인증하거나 올바른 접근 권한을 제공한 다음 Preview 배포를 재시도한다.
 3. `MABIMOBI_API_KEY`는 Vercel Project Settings → Environment Variables에 사용자가 설정해야 한다. 소스, 공개 JSON, 커밋에 키를 넣지 않는다.
 4. AI A 검사는 완료되어 기록됐다. AI B 후보 커밋에서 같은 고정 테스트를 실행하고 로그·커밋·환경을 기록한다. AI 작업 환경이 동일했다고 추정하지 말고 실제 작업 환경과 검사 runner를 구분한다.
 
 ## 6. 다음 행동
-1. [AI A T05 검사 run](https://github.com/WILDMONSTR/information-mi/actions/runs/38706730878)을 참고해 AI B 후보 커밋에서도 `node test-marketPrices.js`를 실행한다.
+1. 먼저 Vercel 연결 권한을 복구한다. 액세스 토큰을 채팅에 붙여넣지 말고, Vercel 커넥터를 대상 scope에 재인증하거나 Vercel 계정 소유자가 권한을 부여한다.
+2. 권한 확인 후 비교 브랜치 `vercel-ai-handoff-comparison`을 **Preview**로 배포하고 `/ai-comparison.html`, `/page/market.html`, `/api/market/prices`를 확인한다. Production 배포는 별도 승인 없이 하지 않는다.
+3. [AI A T05 검사 run](https://github.com/WILDMONSTR/information-mi/actions/runs/38706730878)을 참고해 AI B 후보 커밋에서도 `node test-marketPrices.js`를 실행한다.
 2. AI B 실행의 검사 대상 커밋, 실제 검사 runner OS/Node/npm/Git 버전, run URL 및 C01~C10 결과를 기록한다. AI 도구 자체의 작업 환경은 별도로 기록하며 같았다고 추정하지 않는다.
 3. AI B의 증거가 확보된 뒤에만 비교 점수를 산정한다.
 4. 이후 Vercel 프로젝트/팀 연결 권한을 확인한 뒤 Preview만 배포하고 페이지/API를 점검한다. Production 전환은 하지 않는다.
@@ -158,6 +162,13 @@ git status --short
 - 결과 JSON 커밋: `41950c1de627b6cadfa1ba8dfd3323c6ce249a53` — A를 완료/10 PASS, B는 미실행, 비교 점수는 미산정으로 기록.
 - 기록/비교 로직 수정 이후 GitHub Actions run: https://github.com/WILDMONSTR/information-mi/actions/runs/38707285906 — 성공. AI-C01~C10 10/10 PASS, VERCEL-API-01~08 PASS, Node.js `v22.22.0` 확인, `node --check api/market/prices.js` 통과. Vercel Preview/실제 MABIMOBI 호출은 검증하지 않음.
 - 비교 페이지는 공통 시작 커밋과 후보별 검사 대상 커밋을 분리한다. A/B 결과 커밋은 서로 달라도 되며, 실제 검사 증거와 런타임 기록이 완성되기 전에는 비교 점수를 공개하지 않는다.
+
+### Vercel 배포 시도 — 보류
+- 요청: 비교 보고서를 Vercel에 배포
+- 요청한 대상: `vercel-ai-handoff-comparison` 브랜치의 Preview 배포 (운영 Production은 변경하지 않음)
+- 결과: 실패. Vercel API 응답은 `403 Forbidden: Not authorized to access the intended scope`였으며, 프로젝트 목록/프로젝트 조회도 같은 접근 거부를 반환했다.
+- 배포 URL: 생성되지 않음. 프로젝트 또는 팀을 임의로 바꾸거나 `main`/Production에 배포하지 않았다.
+- 재개 조건: Vercel connector를 올바른 scope에 재인증한 후 Preview 배포 및 URL 확인을 수행한다.
 
 ### 다음 작업
 AI B는 인수인계 문서만을 바탕으로 작업을 재개하고, 자신의 검사 대상 커밋에서 같은 T05-C01~C10 스크립트를 실행한다. AI A의 PASS 결과를 AI B 결과로 복사하지 않는다. AI 작업 환경을 강제로 통일하지 않으며, AI B의 실제 작업 환경과 검사 runner 환경을 구분해서 기록한다.

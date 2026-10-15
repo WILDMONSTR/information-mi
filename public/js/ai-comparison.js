@@ -69,7 +69,7 @@
     const valid = comparisonValid();
     $("valid-runs").textContent = (Number(validA) + Number(validB)) + " / 2";
     $("a-summary").textContent = a.status === "completed" ? (validA ? "검사 완료" : "증거 부족") : a.status === "blocked" ? "복제 실패" : "대기 중";
-    $("a-detail").textContent = a.status === "blocked" ? "DNS 오류 · 테스트 미실행" : (a.node || "Node 버전 미기록");
+    $("a-detail").textContent = a.status === "blocked" ? "실행 환경 문제 · 테스트 미실행" : (validA ? score(a) + "/" + TESTS.length + " PASS · " + a.node : (a.node || "Node 버전 미기록"));
     $("b-summary").textContent = b.status === "completed" ? (validB ? "검사 완료" : "증거 부족") : b.status === "blocked" ? "실행 중단" : "대기 중";
     $("b-detail").textContent = b.status === "pending" ? "이번 회차 증거 미제출" : (b.node || "Node 버전 미기록");
     $("comparison-status").textContent = valid ? "동일 조건 확인" : "판정 보류";

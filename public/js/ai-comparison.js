@@ -2,7 +2,7 @@
   "use strict";
   const DATA_URL = "./data/ai-comparison-results.json";
   const STORAGE_KEY = "information-mi-ai-comparison-draft-v1";
-  const REQUIRED_NODE = "v22.16.0";
+  const REQUIRED_NODE = "v22.22.0";
   const TESTS = [
     ["T05-C01","구문 검사"],["T05-C02","핸들러 확인"],["T05-C03","정상 요청"],
     ["T05-C04","HTTP 메서드 제한"],["T05-C05","페이지네이션 경계"],["T05-C06","검색 길이 제한"],

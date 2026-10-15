@@ -21,4 +21,5 @@ jobs:
         with:
           node-version: "22.16.0"
       - run: node test-ai-comparison.js
+      - run: node test-vercel-market-api.js
       - run: node --check api/market/prices.js

@@ -127,3 +127,15 @@ git status --short
 ### 9.5 하지 않은 것
 - 5절 4번, 6절 2번(AI A/B 후보 코드를 같은 runner에서 각각 실행)은 수행하지 않았다. 비교 점수와 기본 공개 JSON은 그대로 "미산정"이다.
 - 이전 확인에서 이미 통과한 페이지 동작(10개 행 표시, JSON 내보내기·가져오기, 임시 저장, 시세 페이지의 Firebase 요청 0건)은 다시 검사하지 않았다. 이번에 바뀐 파일 중 해당 동작을 건드리는 변경은 없었다.
+
+### 9.6 조치 — 커밋 `7ae36a9` (9.3 불일치 수정)
+- `public/ai-comparison.html`(2곳), `public/js/ai-comparison.js`(1곳), `public/data/ai-comparison-results.json`(4곳)의 `v22.16.0`을 모두 `v22.22.0`으로 바꿨다. JSON의 후보 A/B `node` 값은 측정 기록이 아니라 기본 자리표시값이다(A는 clone 실패로 테스트 미실행, B는 대기). 다른 필드와 기본 결과 상태(A 차단, B 대기, C01~C10 미실행, 점수 미산정)는 바꾸지 않았다.
+- `test-ai-comparison.js`의 `AI-C10`에 검사를 추가했다. 세 파일에 `22.16.0`이 남아 있으면 실패하고, `requiredNode`, `requiredEnvironment.node`, `run-node` 기본값이 `REQUIRED_NODE`와 다르면 실패한다. 검사 개수는 그대로 10개다.
+- 새 검사가 불일치를 잡는지 수정 전에 확인했다: 수정 전 트리에서 `AI-C10 FAIL: ai-comparison.html에 이전 Node.js 버전 v22.16.0이 남아 있음`, 수정 후 PASS.
+- 수정 후 로컬(Node `v22.22.0`): `node --check` 2개 종료 코드 0, `test-ai-comparison.js` 10/10 PASS(종료 코드 0), `test-vercel-market-api.js` 종료 코드 0, 공개 JSON 유효.
+- 페이지 재현(로컬 정적 서버): 조건 카드와 `run-node` 기본값이 `v22.22.0`이고, 기본값 그대로 "완료" 기록이 저장된다. `v22.16.0`을 입력하면 거부되며 안내는 `v22.22.0`이다.
+- GitHub Actions run `38704996229` (커밋 `7ae36a9`): 성공. `Verify fixed Node.js version`, 두 테스트, `node --check api/market/prices.js` 단계가 모두 성공이다(로그 원문은 읽지 못했다).
+- 9.3의 "미수정" 표기는 이 조치 이전의 상태 기록이며, 8절의 "모두 맞췄다"는 서술은 이 커밋 이후 사실이다.
+
+### 9.7 남은 불일치 후보 (미수정)
+- 기본 JSON의 `requiredEnvironment.npm`은 `10.9.2`이지만, 이 검증 환경의 Node `v22.22.0`이 포함한 npm은 `10.9.4`였다. `requiredEnvironment.git`(`git version 2.47.3`)도 이 환경(`2.43.0`)과 다르다. 두 값은 페이지의 필수 조건 판정에 쓰이지 않는 것으로 보이나, 표시 목적이라면 확인이 필요하다.

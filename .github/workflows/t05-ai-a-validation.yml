@@ -1,0 +1,30 @@
+name: T05 AI A fixed checks
+on:
+  push:
+    branches: [t05-ai-a-run-20261015]
+  workflow_dispatch:
+jobs:
+  test-ai-a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact AI A candidate commit
+        uses: actions/checkout@v4
+        with:
+          ref: cbe1410bcc1ac41a5c5573f9572b3fe3736034df
+          fetch-depth: 0
+      - name: Set Node.js 22.22.0 for fixed evaluation runner
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+      - name: Record environment
+        run: |
+          node --version
+          test "$(node --version)" = "v22.22.0"
+          npm --version
+          git --version
+          git rev-parse HEAD
+          git status --short
+      - name: Run fixed T05-C01 through T05-C10 tests
+        run: node test-marketPrices.js
+      - name: Record scope diff for T05-C10
+        run: git diff --numstat 923612383174f094754909254a57b54a03c4f4a6...HEAD
